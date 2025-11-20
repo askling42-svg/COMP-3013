@@ -1,21 +1,21 @@
 'use client'
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ViewBlock({
     params,
 }: {
     params: Promise<{ id: number }>
 }) {
-    const [blockId, setId] = useState(0)
+    const [blockId, setId] = useState(0);
     const [title, setTitle] = useState("");
     const [code, setCode] = useState("");
 
     const getBlock = async () => {
         const { id } = await params;
         setId(id);
-        const response = await fetch(`/api/get/${id}`);
+        const response = await fetch(`/api/${id}/get`);
         if(response.ok) {
             const data = await response.json();
             setTitle(data.title);
@@ -25,10 +25,11 @@ export default function ViewBlock({
             console.log(errorData.error);
         }
     }
-    getBlock();
+    useEffect(() => {getBlock();}, [])
 
-    const handleDelete = async () => {
-        const response = await fetch(`api/delete/${blockId}`);
+    const handleDelete = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const response = await fetch(`/api/${blockId}/delete`);
         if(response.ok) {
             redirect("/");
         } else {
@@ -51,9 +52,9 @@ export default function ViewBlock({
         </header>
             <h2 className="text-2xl">{title}</h2>
             <p className="px-4 py-2 mt-3 w-full bg-white rounded-lg shadow-sm hover:shadow-md transition">{code}</p>
-            <div className="mt-4">
-                <button className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition" onClick={handleDelete}>Delete</button> <Link className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition" href={`/blocks/${blockId}/edit`}>Edit</Link>
-            </div>
+            <form className="mt-4" onSubmit={handleDelete}>
+                <button className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition">Delete</button> <Link className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition" href={`/blocks/${blockId}/edit`}>Edit</Link>
+            </form>
       </div>
     </main>
     );

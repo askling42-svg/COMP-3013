@@ -1,9 +1,9 @@
 'use client'
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default async function EditBlock({params,
+export default function EditBlock({params,
 }: {
     params: Promise<{ id: number }>
 }) {
@@ -14,19 +14,22 @@ export default async function EditBlock({params,
     const getBlock = async () => {
         const { id } = await params;
         setId(id);
-        const response = await fetch(`/api/get/${id}`);
+        const response = await fetch(`/api/${id}/get`);
         if(response.ok) {
-            console.log("Block updated")
+            const data = await response.json();
+            setTitle(data.title);
+            setCode(data.code);
         } else {
             const errorData = await response.json();
             console.log(errorData.error);
         }
     }
-    getBlock();
+    useEffect(() => {getBlock();}, []);
+   
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const response = await fetch(`/api/edit/${blockId}/route`, {
+        const response = await fetch(`/api/${blockId}/edit`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
