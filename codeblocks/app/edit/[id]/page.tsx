@@ -26,7 +26,8 @@ export default async function EditBlock({params,
                 <header className="flex items-center justify-between mb-8">
                     <h1 className="text-3xl font-semibold text-gray-800">Code Blocks</h1>
                     <Button
-                        className="inline-block px-4 py-2 text-sm font-medium text-black bg-grey-600 rounded-lg hover:bg-grey-700 transition"
+                        type="button"
+                        className="inline-block w-fit underline px-4 py-2 text-sm font-medium text-black bg-grey-600 rounded-lg hover:bg-grey-700 transition"//Intended to be white text on grey.
                         onClick={handleSignout}
                     >Signout</Button>
                 </header>
